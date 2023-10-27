@@ -10,7 +10,7 @@ const middleware = require('./utils/middleware')
 
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl)
-.then(() => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch((error) => {
@@ -19,6 +19,7 @@ mongoose.connect(mongoUrl)
 
 app.use(cors())
 app.use(express.json())
+app.use(express.static('client/build'))
 app.use(middleware.tokenExtractor)
 app.use(middleware.userExtractor)
 app.use(middleware.requestLogger)
@@ -32,4 +33,4 @@ if (process.env.NODE_ENV === 'test') {
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 
-module.exports=app
+module.exports = app
