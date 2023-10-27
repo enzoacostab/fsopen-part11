@@ -10,23 +10,22 @@ const requestLogger = (request, response, next) => {
 }
 
 const tokenExtractor = (request, response, next) => {
-  const token = request.headers.authorization;
+  const token = request.headers.authorization
   if (token) {
-    request.token = token.split(' ')[1];
+    request.token = token.split(' ')[1]
   }
   next()
 }
 
-const userExtractor = async(request, response, next) => {
-  let decodedToken;
+const userExtractor = async (request, response, next) => {
+  let decodedToken
   const token = request.token
-  if (request.token){
-    try{
+  if (request.token) {
+    try {
       decodedToken = jwt.verify(token, process.env.SECRET)
-      const user=await User.findById(decodedToken.id)
-      request.user=user
-    }
-    catch{
+      const user = await User.findById(decodedToken.id)
+      request.user = user
+    } catch {
       return response.status(401).json({ error: 'token invalid' })
     }
   }
@@ -44,7 +43,7 @@ const errorHandler = (error, request, response, next) => {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
-  } else if (error.name ===  'JsonWebTokenError') {
+  } else if (error.name === 'JsonWebTokenError') {
     return response.status(400).json({ error: error.message })
   }
 
