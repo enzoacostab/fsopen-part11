@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import Blogs from './components/Blogs'
 import Login from './components/Login'
 import CreateBlog from './components/CreateBlog'
 import blogService from './services/blogs'
 import './App.css'
-
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -16,8 +15,8 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+      setBlogs(blogs)
+    )
   }, [])
 
   useEffect(() => {
@@ -25,33 +24,32 @@ const App = () => {
     if (loggedUserJSON) {
       const us = JSON.parse(loggedUserJSON)
       setUser(us)
-      setAuth({headers:{Authorization: `Bearer ${us.token}`}})
+      setAuth({ headers: { Authorization: `Bearer ${us.token}` } })
     }
   }, [])
 
-  const addBlog = async(data) =>{
-    try{
-      const res=await blogService.create(data, auth)
+  const addBlog = async (data) => {
+    try {
+      const res = await blogService.create(data, auth)
       setBlogs(blogs.concat(res))
       setMsg(`${data.title} by ${data.author} added`)
       message.classList.add('done')
       setTimeout(() => {
         message.classList.remove('done')
         setMsg('')
-      }, 7000);
-    }
-    catch(err){
+      }, 7000)
+    } catch (err) {
       setMsg(err.message)
       message.classList.add('err')
       setTimeout(() => {
         message.classList.remove('err')
         setMsg('')
-      }, 5000);
+      }, 5000)
     }
   }
-  
-  const like = async(data) =>{
-    try{
+
+  const like = async (data) => {
+    try {
       data.likes++
       await blogService.like(data)
       setMsg('liked')
@@ -59,43 +57,41 @@ const App = () => {
       setTimeout(() => {
         message.classList.remove('done')
         setMsg('')
-      }, 5000);
-    }
-    catch(err){
+      }, 5000)
+    } catch (err) {
       setMsg(err.message)
       message.classList.add('err')
       setTimeout(() => {
         message.classList.remove('err')
         setMsg('')
-      }, 5000);
+      }, 5000)
     }
   }
 
-  const remove = async(id) => {
-    try{
+  const remove = async (id) => {
+    try {
       await blogService.remove(id, auth)
-      setBlogs(blogs.filter(e=>e.id!==id))
+      setBlogs(blogs.filter(e => e.id !== id))
       setMsg('removed')
       message.classList.add('done')
       setTimeout(() => {
         message.classList.remove('done')
         setMsg('')
-      }, 5000);
-    }
-    catch(err){
+      }, 5000)
+    } catch (err) {
       setMsg(err.message)
       message.classList.add('err')
       setTimeout(() => {
         message.classList.remove('err')
         setMsg('')
-      }, 5000);
+      }, 5000)
     }
   }
 
-  if (user){ 
-    return <Blogs remove={remove} like={like} vis={{val:visible, set:setVisible}} msg={msg} user={user} blogs={blogs}>
+  if (user) {
+    return <Blogs remove={remove} like={like} vis={{ val: visible, set: setVisible }} msg={msg} user={user} blogs={blogs}>
     <CreateBlog createBlog={addBlog}/></Blogs>
-  }else{
+  } else {
     return <Login msg={msg} setMsg={setMsg} setAuth={setAuth} setUser={setUser}/>
   }
 }

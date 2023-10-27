@@ -7,34 +7,32 @@ const User = require('../models/user')
 
 const initialBlogs = [
   {
-    title: "y",
-    author: "enzo",
-    url: "asdfjkda",
+    title: 'y',
+    author: 'enzo',
+    url: 'asdfjkda',
     likes: 45,
   },
   {
-    title: "x",
-    author: "enzo",
-    url: "asdas",
+    title: 'x',
+    author: 'enzo',
+    url: 'asdas',
     likes: 23,
   },
 ]
-const initialUser={
-    username:'evf',
-    name:'enzo',
-    password:'123'
+const initialUser = {
+  username: 'evf',
+  name: 'enzo',
+  password: '123'
 }
-beforeEach(async () => {
-    await Blog.deleteMany({})
-    await User.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
-    await api.post('/api/users').send(initialUser)
-
-    
-},10000)
+beforeEach (async () => {
+  await Blog.deleteMany({})
+  await User.deleteMany({})
+  let blogObject = new Blog(initialBlogs[0])
+  await blogObject.save()
+  blogObject = new Blog(initialBlogs[1])
+  await blogObject.save()
+  await api.post('/api/users').send(initialUser)
+}, 10000)
 
 test('json format and correct amount', async () => {
     const res=await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/)
@@ -43,7 +41,7 @@ test('json format and correct amount', async () => {
 
 test('unique identifier id', async () => {
     const res=await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/)
-    expect(res.body[0]["id"]).toBeDefined()
+    expect(res.body[0]['id']).toBeDefined()
 })
 
 test('add blog', async () => {
@@ -51,11 +49,11 @@ test('add blog', async () => {
         username: 'evf',
         password: '123'
     }
-    const token=await api.post('/api/login').send(aut)
+    const token = await api.post('/api/login').send(aut)
     const nb={
-        title: "y",
-        author: "enzo",
-        url: "kjkda",
+        title: 'y',
+        author: 'enzo',
+        url: 'kjkda',
         likes: 45,}
     await api.post('/api/blogs').set('Authorization', `Bearer ${token.body.token}`).send(nb).expect(201).expect('Content-Type', /application\/json/)
     const res=await api.get('/api/blogs').expect(200).expect('Content-Type', /application\/json/)
@@ -69,9 +67,9 @@ test('add blog without likes', async () => {
     }
     const token=await api.post('/api/login').send(aut)
     const nb = {
-        title: "y",
-        author: "enzo",
-        url: "kjkda",
+        title: 'y',
+        author: 'enzo',
+        url: 'kjkda',
     }
     await api.post('/api/blogs').set('Authorization', `Bearer ${token.body.token}`).send(nb).expect(201).expect('Content-Type', /application\/json/)
     const response = await api.get('/api/blogs')
@@ -103,9 +101,9 @@ test('add blog without token', async () => {
 
 test('validation error creating user', async () => {
     const nu = {
-        "username":"ev",
-        "name":"enzo",
-        "password":"1jk"
+        'username':'ev',
+        'name':'enzo',
+        'password':'1jk'
     }
     await api.post('/api/users').send(nu).expect(400).expect('Content-Type', /text\/html/)
 })
