@@ -17,6 +17,10 @@ mongoose.connect(mongoUrl)
     console.error('error connecting to MongoDB:', error.message)
   })
 
+app.get('/health', (req, res) => {
+  res.send('ok')
+})
+
 app.use(cors())
 app.use(express.json())
 app.use(express.static('client/build'))
